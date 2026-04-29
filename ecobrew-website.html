@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoBrew – Zero-Waste Coffee Subscription</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --bark: #2C1A0E;
+    --forest: #2D5016;
+    --moss: #4A7A2A;
+    --sage: #8FAF6A;
+    --latte: #C4956A;
+    --espresso: #3D1F0F;
+    --white: #FDFAF6;
+    --text: #1A1008;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    font-size: 16px;
+  }
+
+  /* ── COOKIE BANNER ── */
+  #cookie-banner {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--bark);
+    color: var(--cream);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    z-index: 9999;
+    font-size: 14px;
+    border-top: 3px solid var(--moss);
+  }
+  #cookie-banner p { max-width: 600px; line-height: 1.5; }
+  #cookie-banner a { color: var(--sage); text-decoration: underline; cursor: pointer; }
+  .cookie-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .cookie-btns button {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .btn-accept-all { background: var(--moss); color: white; }
+  .btn-necessary { background: transparent; color: var(--cream); border: 1.5px solid var(--sage) !important; }
+  .btn-settings { background: transparent; color: var(--latte); text-decoration: underline; border: none !important; }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--cream);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo span { color: var(--sage); }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-links a {
+    color: var(--cream);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex; align-items: center; gap: 6px;
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  .nav-links a:hover, .nav-links a.active { background: rgba(255,255,255,0.12); }
+  .nav-links a .nav-icon { font-size: 16px; }
+  .nav-cta {
+    background: var(--moss);
+    color: white !important;
+    border-radius: 6px !important;
+  }
+  .nav-cta:hover { background: var(--forest) !important; }
+
+  /* ── BREADCRUMB ── */
+  .breadcrumb {
+    background: var(--white);
+    padding: 10px 48px;
+    font-size: 13px;
+    color: #777;
+    border-bottom: 1px solid #e8e2d8;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .breadcrumb a { color: var(--moss); text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb .sep { color: #bbb; }
+
+  /* ── PAGES ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── HOME PAGE ── */
+  .hero {
+    background: linear-gradient(135deg, var(--bark) 0%, var(--espresso) 60%, #1a0d05 100%);
+    padding: 100px 48px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(74,122,42,0.2) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 30%, rgba(196,149,106,0.15) 0%, transparent 50%);
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(143,175,106,0.2);
+    border: 1px solid var(--sage);
+    color: var(--sage);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.05;
+    margin-bottom: 20px;
+  }
+  .hero h1 em { color: var(--sage); font-style: normal; }
+  .hero p {
+    color: rgba(245,240,232,0.75);
+    font-size: 18px;
+    max-width: 520px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+  .btn-primary {
+    display: inline-block;
+    background: var(--moss);
+    color: white;
+    padding: 16px 40px;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: transform 0.2s, background 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary:hover { background: var(--forest); transform: translateY(-2px); }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .stat { text-align: center; }
+  .stat .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--sage);
+  }
+  .stat .lbl {
+    font-size: 13px;
+    color: rgba(245,240,232,0.6);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #e0d8cc;
+    border-top: 1px solid #e0d8cc;
+  }
+  .feature {
+    background: var(--white);
+    padding: 48px 36px;
+    text-align: center;
+  }
+  .feature-icon { font-size: 40px; margin-bottom: 16px; }
+  .feature h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--bark);
+  }
+  .feature p { color: #666; font-size: 15px; line-height: 1.6; }
+
+  .impact-section {
+    background: var(--forest);
+    padding: 80px 48px;
+    text-align: center;
+  }
+  .impact-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    color: var(--cream);
+    margin-bottom: 12px;
+  }
+  .impact-section p { color: rgba(245,240,232,0.7); margin-bottom: 40px; font-size: 16px; }
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .impact-card {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 28px 16px;
+  }
+  .impact-card .big {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--sage);
+  }
+  .impact-card .label {
+    font-size: 13px;
+    color: rgba(245,240,232,0.65);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  footer {
+    background: var(--bark);
+    color: rgba(245,240,232,0.5);
+    text-align: center;
+    padding: 28px 48px;
+    font-size: 13px;
+  }
+  footer a { color: var(--sage); text-decoration: none; cursor: pointer; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── SUBSCRIPTION BUILDER ── */
+  .sub-page { padding: 48px; max-width: 860px; margin: 0 auto; }
+  .sub-page h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    color: var(--bark);
+    margin-bottom: 8px;
+  }
+  .sub-page .subtitle { color: #777; margin-bottom: 40px; }
+
+  /* PROGRESS BAR */
+  .progress-wrapper {
+    background: var(--white);
+    border: 1px solid #e0d8cc;
+    border-radius: 16px;
+    padding: 32px 40px;
+    margin-bottom: 40px;
+  }
+  .progress-steps {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+  .progress-track {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    background: #e0d8cc;
+    z-index: 0;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--moss);
+    transition: width 0.4s ease;
+  }
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 1;
+    cursor: pointer;
+  }
+  .step-circle {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: #e0d8cc;
+    color: #999;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    border: 3px solid #e0d8cc;
+    transition: all 0.3s;
+  }
+  .step.done .step-circle { background: var(--moss); border-color: var(--moss); color: white; }
+  .step.active .step-circle { background: white; border-color: var(--moss); color: var(--moss); box-shadow: 0 0 0 4px rgba(74,122,42,0.15); }
+  .step-label { font-size: 12px; font-weight: 600; color: #999; text-align: center; max-width: 80px; line-height: 1.3; }
+  .step.done .step-label, .step.active .step-label { color: var(--moss); }
+
+  .step-content { background: var(--white); border: 1px solid #e0d8cc; border-radius: 16px; padding: 36px 40px; margin-bottom: 24px; }
+  .step-content h2 { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--bark); margin-bottom: 24px; }
+
+  .bean-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .bean-card {
+    border: 2px solid #e0d8cc;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--cream);
+  }
+  .bean-card:hover, .bean-card.selected { border-color: var(--moss); background: rgba(74,122,42,0.06); }
+  .bean-card.selected { box-shadow: 0 0 0 2px var(--moss); }
+  .bean-emoji { font-size: 28px; margin-bottom: 8px; }
+  .bean-name { font-weight: 700; font-size: 15px; color: var(--bark); margin-bottom: 4px; }
+  .bean-origin { font-size: 12px; color: #888; margin-bottom: 8px; }
+  .bean-tag { display: inline-block; background: rgba(74,122,42,0.1); color: var(--moss); font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+
+  .freq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .freq-card {
+    border: 2px solid #e0d8cc;
+    border-radius: 12px;
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--cream);
+    display: flex; align-items: center; gap: 16px;
+  }
+  .freq-card:hover, .freq-card.selected { border-color: var(--moss); background: rgba(74,122,42,0.06); }
+  .freq-card.selected { box-shadow: 0 0 0 2px var(--moss); }
+  .freq-icon { font-size: 30px; }
+  .freq-info .freq-name { font-weight: 700; font-size: 15px; color: var(--bark); }
+  .freq-info .freq-price { font-size: 13px; color: var(--moss); font-weight: 600; margin-top: 2px; }
+  .freq-info .freq-note { font-size: 12px; color: #888; margin-top: 2px; }
+
+  .returns-info { background: rgba(74,122,42,0.07); border: 1px solid rgba(74,122,42,0.2); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .returns-info h3 { font-weight: 700; color: var(--forest); margin-bottom: 8px; font-size: 16px; }
+  .returns-info p { font-size: 14px; color: #555; line-height: 1.6; }
+  .calendar-mock {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 6px; margin-top: 16px;
+  }
+  .cal-day { text-align: center; padding: 8px 4px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .cal-day.header { font-weight: 700; color: #888; font-size: 12px; }
+  .cal-day.available { background: var(--cream); border: 1px solid #e0d8cc; color: var(--bark); }
+  .cal-day.available:hover { border-color: var(--moss); background: rgba(74,122,42,0.08); }
+  .cal-day.selected-day { background: var(--moss); color: white; border: 1px solid var(--moss); }
+  .cal-day.empty { background: transparent; }
+
+  .payment-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--bark); }
+  .form-group input, .form-group select {
+    padding: 12px 14px;
+    border: 1.5px solid #d0c8bc;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    background: var(--cream);
+    color: var(--text);
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--moss); }
+  .gdpr-note { background: rgba(44,26,14,0.05); border-left: 3px solid var(--latte); padding: 14px 16px; border-radius: 0 8px 8px 0; font-size: 13px; color: #666; line-height: 1.6; margin-top: 8px; }
+  .gdpr-note strong { color: var(--bark); }
+
+  .step-nav { display: flex; justify-content: space-between; align-items: center; }
+  .btn-back {
+    background: transparent;
+    border: 1.5px solid #d0c8bc;
+    color: #888;
+    padding: 12px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: var(--bark); color: var(--bark); }
+  .btn-next {
+    background: var(--moss);
+    color: white;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+  .btn-next:hover { background: var(--forest); }
+
+  /* ── OUR IMPACT ── */
+  .impact-page { max-width: 900px; margin: 0 auto; padding: 48px; }
+  .impact-page h1 { font-family: 'Playfair Display', serif; font-size: 44px; color: var(--bark); margin-bottom: 12px; }
+  .impact-page .lead { font-size: 18px; color: #555; line-height: 1.6; margin-bottom: 48px; max-width: 640px; }
+  .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+  .metric-box {
+    background: var(--white);
+    border: 1px solid #e0d8cc;
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .metric-box:hover { transform: translateY(-4px); }
+  .metric-box .m-num { font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 700; color: var(--forest); }
+  .metric-box .m-unit { font-size: 16px; color: var(--moss); font-weight: 600; margin-bottom: 8px; }
+  .metric-box .m-label { font-size: 14px; color: #777; line-height: 1.4; }
+  .bcorp-banner {
+    background: var(--bark);
+    color: var(--cream);
+    border-radius: 16px;
+    padding: 36px 40px;
+    display: flex; align-items: center; gap: 32px;
+    margin-bottom: 40px;
+  }
+  .bcorp-badge { font-size: 60px; }
+  .bcorp-text h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 8px; }
+  .bcorp-text p { color: rgba(245,240,232,0.7); font-size: 15px; line-height: 1.6; }
+
+  /* ── RETURNS PORTAL ── */
+  .returns-page { max-width: 700px; margin: 0 auto; padding: 48px; }
+  .returns-page h1 { font-family: 'Playfair Display', serif; font-size: 40px; color: var(--bark); margin-bottom: 8px; }
+  .returns-page .subtitle { color: #777; margin-bottom: 36px; }
+  .return-form { background: var(--white); border: 1px solid #e0d8cc; border-radius: 16px; padding: 36px; }
+  .return-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .return-form label { display: block; font-size: 13px; font-weight: 600; color: var(--bark); margin-bottom: 6px; }
+  .return-form input, .return-form select {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid #d0c8bc; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px;
+    background: var(--cream); color: var(--text);
+  }
+  .return-form input:focus, .return-form select:focus { outline: none; border-color: var(--moss); }
+  .canister-counter {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 6px;
+  }
+  .count-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--moss);
+    background: transparent;
+    color: var(--moss);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .count-btn:hover { background: var(--moss); color: white; }
+  .count-num { font-size: 24px; font-weight: 700; color: var(--bark); min-width: 30px; text-align: center; }
+  .confirm-btn {
+    width: 100%; margin-top: 24px;
+    background: var(--moss); color: white; border: none;
+    padding: 15px; border-radius: 10px;
+    font-size: 16px; font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .confirm-btn:hover { background: var(--forest); }
+
+  /* ── PRIVACY POLICY ── */
+  .privacy-page { max-width: 800px; margin: 0 auto; padding: 48px; }
+  .privacy-page h1 { font-family: 'Playfair Display', serif; font-size: 40px; color: var(--bark); margin-bottom: 8px; }
+  .privacy-meta { font-size: 13px; color: #999; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #e0d8cc; }
+  .privacy-page h2 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--bark); margin: 36px 0 14px; }
+  .privacy-page p, .privacy-page li { font-size: 15px; color: #555; line-height: 1.75; margin-bottom: 12px; }
+  .privacy-page ul { padding-left: 20px; }
+  .privacy-page li { margin-bottom: 6px; }
+  .privacy-page strong { color: var(--bark); }
+  .privacy-box {
+    background: rgba(74,122,42,0.07);
+    border: 1px solid rgba(74,122,42,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .privacy-box p { margin: 0; }
+  .tag-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  .tag-table th { background: var(--bark); color: var(--cream); padding: 10px 14px; text-align: left; font-size: 13px; }
+  .tag-table td { padding: 10px 14px; border-bottom: 1px solid #e0d8cc; font-size: 14px; color: #555; }
+  .tag-table tr:last-child td { border-bottom: none; }
+  .tag-table tr:hover td { background: rgba(74,122,42,0.04); }
+
+  /* ── ACCOUNT ── */
+  .account-page { max-width: 700px; margin: 0 auto; padding: 48px; }
+  .account-page h1 { font-family: 'Playfair Display', serif; font-size: 40px; color: var(--bark); margin-bottom: 36px; }
+  .account-card { background: var(--white); border: 1px solid #e0d8cc; border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+  .account-card h3 { font-weight: 700; color: var(--bark); margin-bottom: 16px; font-size: 16px; }
+  .account-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0ece4; font-size: 15px; }
+  .account-row:last-child { border-bottom: none; }
+  .account-row .key { color: #888; }
+  .account-row .val { font-weight: 600; color: var(--bark); }
+  .status-badge {
+    display: inline-block; background: rgba(74,122,42,0.12); color: var(--moss);
+    padding: 3px 10px; border-radius: 10px; font-size: 12px; font-weight: 700;
+  }
+
+  /* SUCCESS STATE */
+  .success-page { text-align: center; padding: 80px 48px; }
+  .success-icon { font-size: 80px; margin-bottom: 24px; }
+  .success-page h2 { font-family: 'Playfair Display', serif; font-size: 40px; color: var(--forest); margin-bottom: 16px; }
+  .success-page p { color: #666; font-size: 17px; max-width: 480px; margin: 0 auto 32px; line-height: 1.6; }
+
+</style>
+</head>
+<body>
+
+<!-- COOKIE BANNER -->
+<div id="cookie-banner">
+  <p>🍪 We use cookies to improve your experience and analyse site usage. See our <a onclick="showPage('privacy')">Privacy Policy</a> for details. You can manage your preferences at any time.</p>
+  <div class="cookie-btns">
+    <button class="btn-settings" onclick="document.getElementById('cookie-banner').style.display='none'">Cookie Settings</button>
+    <button class="btn-necessary" onclick="document.getElementById('cookie-banner').style.display='none'">Necessary Only</button>
+    <button class="btn-accept-all" onclick="document.getElementById('cookie-banner').style.display='none'">Accept All</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')" style="cursor:pointer">
+    ☕ Eco<span>Brew</span>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home')" id="nav-home" class="active"><span class="nav-icon">🏠</span> Home</a>
+    <a onclick="showPage('subscription')" id="nav-subscription"><span class="nav-icon">📦</span> Subscription</a>
+    <a onclick="showPage('impact')" id="nav-impact"><span class="nav-icon">🌱</span> Our Impact</a>
+    <a onclick="showPage('returns')" id="nav-returns"><span class="nav-icon">♻️</span> Returns Portal</a>
+    <a onclick="showPage('account')" id="nav-account"><span class="nav-icon">👤</span> Account</a>
+    <a onclick="showPage('subscription')" class="nav-cta">Build Your Box →</a>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb" id="breadcrumb">
+  <a onclick="showPage('home')">Home</a>
+</div>
+
+<!-- ══════════════════════ HOME PAGE ══════════════════════ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-tag">🌿 Zero-Waste · B Corp Pending · Organic</div>
+      <h1>Exceptional Coffee.<br><em>Zero Compromise.</em><br>Zero Waste.</h1>
+      <p>Freshly roasted organic fair-trade beans, delivered in reusable stainless steel canisters — collected, sanitised, and returned. A true circular economy.</p>
+      <button class="btn-primary" onclick="showPage('subscription')">Build Your Box →</button>
+      <div class="hero-stats">
+        <div class="stat"><div class="num">3,200+</div><div class="lbl">Active Subscribers</div></div>
+        <div class="stat"><div class="num">98%</div><div class="lbl">Canister Return Rate</div></div>
+        <div class="stat"><div class="num">42kg</div><div class="lbl">Avg. CO₂ Saved / Year</div></div>
+        <div class="stat"><div class="num">0</div><div class="lbl">Single-Use Packaging</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">🫙</div>
+      <h3>Reusable Steel Canisters</h3>
+      <p>Your beans arrive in a premium stainless steel canister. We collect it, sanitise it, and send it back — endlessly.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🌍</div>
+      <h3>Carbon Tracked</h3>
+      <p>Every delivery comes with a personalised carbon impact report. Know exactly how much CO₂ your subscription saves.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">✓</div>
+      <h3>Fair-Trade Certified</h3>
+      <p>100% organic, fair-trade beans sourced directly from co-operatives across Ethiopia, Colombia and Guatemala.</p>
+    </div>
+  </div>
+
+  <section class="impact-section">
+    <h2>Our Collective Impact</h2>
+    <p>Together, the EcoBrew community has already made a measurable difference.</p>
+    <div class="impact-grid">
+      <div class="impact-card"><div class="big">134t</div><div class="label">CO₂ avoided through canister reuse</div></div>
+      <div class="impact-card"><div class="big">98%</div><div class="label">Canister return rate since launch</div></div>
+      <div class="impact-card"><div class="big">0</div><div class="label">Single-use packaging units shipped</div></div>
+      <div class="impact-card"><div class="big">3</div><div class="label">Direct-trade co-op partnerships</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2024 EcoBrew Ltd · Registered in England & Wales · 
+      <a onclick="showPage('privacy')">Privacy Policy</a> · 
+      <a>Cookie Settings</a> · 
+      <a>Terms of Service</a> · 
+      <a>Accessibility</a>
+    </p>
+    <p style="margin-top:6px">B Corp Certification in progress · WCAG 2.1 AA Compliant · ICO Registration: ZB123456</p>
+  </footer>
+</div>
+
+<!-- ══════════════════════ SUBSCRIPTION BUILDER ══════════════════════ -->
+<div id="page-subscription" class="page">
+  <div class="sub-page">
+    <h1>Build Your Box</h1>
+    <p class="subtitle">Four simple steps to your perfect zero-waste coffee subscription.</p>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-wrapper">
+      <div class="progress-steps">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        <div class="step active" id="step-1" onclick="goToStep(1)">
+          <div class="step-circle" id="circle-1">1</div>
+          <div class="step-label">Choose Bean</div>
+        </div>
+        <div class="step" id="step-2" onclick="goToStep(2)">
+          <div class="step-circle" id="circle-2">2</div>
+          <div class="step-label">Select Frequency</div>
+        </div>
+        <div class="step" id="step-3" onclick="goToStep(3)">
+          <div class="step-circle" id="circle-3">3</div>
+          <div class="step-label">Schedule Returns</div>
+        </div>
+        <div class="step" id="step-4" onclick="goToStep(4)">
+          <div class="step-circle" id="circle-4">4</div>
+          <div class="step-label">Payment</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 1: BEANS -->
+    <div id="step-content-1" class="step-content">
+      <h2>☕ Choose Your Bean</h2>
+      <div class="bean-grid">
+        <div class="bean-card selected" onclick="selectBean(this)">
+          <div class="bean-emoji">🇪🇹</div>
+          <div class="bean-name">Ethiopian Yirgacheffe</div>
+          <div class="bean-origin">Origin: Gedeo Zone, Ethiopia</div>
+          <div class="bean-tag">Light Roast</div>
+        </div>
+        <div class="bean-card" onclick="selectBean(this)">
+          <div class="bean-emoji">🇨🇴</div>
+          <div class="bean-name">Colombian Supremo</div>
+          <div class="bean-origin">Origin: Huila, Colombia</div>
+          <div class="bean-tag">Medium Roast</div>
+        </div>
+        <div class="bean-card" onclick="selectBean(this)">
+          <div class="bean-emoji">🇬🇹</div>
+          <div class="bean-name">Guatemalan Antigua</div>
+          <div class="bean-origin">Origin: Antigua, Guatemala</div>
+          <div class="bean-tag">Dark Roast</div>
+        </div>
+        <div class="bean-card" onclick="selectBean(this)">
+          <div class="bean-emoji">🌿</div>
+          <div class="bean-name">Low Acid Blend</div>
+          <div class="bean-origin">Multi-origin blend</div>
+          <div class="bean-tag">Espresso</div>
+        </div>
+        <div class="bean-card" onclick="selectBean(this)">
+          <div class="bean-emoji">🫘</div>
+          <div class="bean-name">Monthly Discovery</div>
+          <div class="bean-origin">Rotating single origin</div>
+          <div class="bean-tag">Seasonal</div>
+        </div>
+        <div class="bean-card" onclick="selectBean(this)">
+          <div class="bean-emoji">⚡</div>
+          <div class="bean-name">EcoBrew Reserve</div>
+          <div class="bean-origin">Micro-lot, limited edition</div>
+          <div class="bean-tag">Premium</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: FREQUENCY -->
+    <div id="step-content-2" class="step-content" style="display:none">
+      <h2>📅 Select Delivery Frequency</h2>
+      <div class="freq-grid">
+        <div class="freq-card" onclick="selectFreq(this)">
+          <div class="freq-icon">⚡</div>
+          <div class="freq-info">
+            <div class="freq-name">Weekly</div>
+            <div class="freq-price">£18.99 / delivery</div>
+            <div class="freq-note">250g · For the daily enthusiast</div>
+          </div>
+        </div>
+        <div class="freq-card selected" onclick="selectFreq(this)">
+          <div class="freq-icon">☕</div>
+          <div class="freq-info">
+            <div class="freq-name">Fortnightly</div>
+            <div class="freq-price">£17.49 / delivery · Save 8%</div>
+            <div class="freq-note">500g · Most popular choice</div>
+          </div>
+        </div>
+        <div class="freq-card" onclick="selectFreq(this)">
+          <div class="freq-icon">🗓️</div>
+          <div class="freq-info">
+            <div class="freq-name">Monthly</div>
+            <div class="freq-price">£15.99 / delivery · Save 16%</div>
+            <div class="freq-note">1kg · Great value, less admin</div>
+          </div>
+        </div>
+        <div class="freq-card" onclick="selectFreq(this)">
+          <div class="freq-icon">🎁</div>
+          <div class="freq-info">
+            <div class="freq-name">Gift (One-off)</div>
+            <div class="freq-price">From £19.99</div>
+            <div class="freq-note">Perfect for gifting a coffee lover</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: RETURNS -->
+    <div id="step-content-3" class="step-content" style="display:none">
+      <h2>♻️ Schedule Canister Returns</h2>
+      <div class="returns-info">
+        <h3>How the circular system works</h3>
+        <p>When your delivery arrives, simply keep the stainless steel canister until your next scheduled return date. Leave it on your doorstep — our courier collects it, we sanitise it, and it's back in service. No packaging ever goes to landfill.</p>
+      </div>
+      <p style="font-size:14px; color:#777; margin-bottom:14px; font-weight:600;">Select your preferred return day (next 4 weeks):</p>
+      <div class="calendar-mock" id="calendar">
+        <div class="cal-day header">Mo</div>
+        <div class="cal-day header">Tu</div>
+        <div class="cal-day header">We</div>
+        <div class="cal-day header">Th</div>
+        <div class="cal-day header">Fr</div>
+        <div class="cal-day header">Sa</div>
+        <div class="cal-day header">Su</div>
+        <div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day available" onclick="selectDay(this)">1</div><div class="cal-day available" onclick="selectDay(this)">2</div><div class="cal-day available" onclick="selectDay(this)">3</div><div class="cal-day available" onclick="selectDay(this)">4</div><div class="cal-day available" onclick="selectDay(this)">5</div>
+        <div class="cal-day available" onclick="selectDay(this)">8</div><div class="cal-day available" onclick="selectDay(this)">9</div><div class="cal-day available" onclick="selectDay(this)">10</div><div class="cal-day available selected-day" onclick="selectDay(this)">11</div><div class="cal-day available" onclick="selectDay(this)">12</div><div class="cal-day available" onclick="selectDay(this)">13</div><div class="cal-day available" onclick="selectDay(this)">14</div>
+        <div class="cal-day available" onclick="selectDay(this)">15</div><div class="cal-day available" onclick="selectDay(this)">16</div><div class="cal-day available" onclick="selectDay(this)">17</div><div class="cal-day available" onclick="selectDay(this)">18</div><div class="cal-day available" onclick="selectDay(this)">19</div><div class="cal-day available" onclick="selectDay(this)">20</div><div class="cal-day available" onclick="selectDay(this)">21</div>
+        <div class="cal-day available" onclick="selectDay(this)">22</div><div class="cal-day available" onclick="selectDay(this)">23</div><div class="cal-day available" onclick="selectDay(this)">24</div><div class="cal-day available" onclick="selectDay(this)">25</div><div class="cal-day available" onclick="selectDay(this)">26</div><div class="cal-day available" onclick="selectDay(this)">27</div><div class="cal-day available" onclick="selectDay(this)">28</div>
+      </div>
+    </div>
+
+    <!-- STEP 4: PAYMENT -->
+    <div id="step-content-4" class="step-content" style="display:none">
+      <h2>💳 Payment Details</h2>
+      <div class="payment-form">
+        <div class="form-group full">
+          <label>Full Name</label>
+          <input type="text" placeholder="e.g. Alex Johnson">
+        </div>
+        <div class="form-group full">
+          <label>Email Address</label>
+          <input type="email" placeholder="alex@example.com">
+        </div>
+        <div class="form-group full">
+          <label>Delivery Address</label>
+          <input type="text" placeholder="123 Green Street, London, EC1A 1BB">
+        </div>
+        <div class="form-group full">
+          <label>Card Number</label>
+          <input type="text" placeholder="1234 5678 9012 3456" maxlength="19">
+        </div>
+        <div class="form-group">
+          <label>Expiry Date</label>
+          <input type="text" placeholder="MM / YY" maxlength="7">
+        </div>
+        <div class="form-group">
+          <label>CVV</label>
+          <input type="text" placeholder="•••" maxlength="3">
+        </div>
+      </div>
+      <div class="gdpr-note">
+        🔒 <strong>Your data is protected.</strong> We collect your name, address, and payment details solely to fulfil your subscription contract (GDPR Art. 6(1)(b)). Data is retained for 24 months after subscription end. You can request deletion at any time via <a href="mailto:privacy@ecobrew.co.uk" style="color:var(--moss)">privacy@ecobrew.co.uk</a>. See our <a onclick="showPage('privacy')" style="color:var(--moss); cursor:pointer">Privacy Policy</a> for full details.
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="step-content-success" class="success-page" style="display:none">
+      <div class="success-icon">🎉</div>
+      <h2>You're all set!</h2>
+      <p>Your EcoBrew subscription is confirmed. Your first canister will arrive within 3–5 working days. Welcome to the circular coffee revolution.</p>
+      <button class="btn-primary" onclick="showPage('home')">Back to Home</button>
+    </div>
+
+    <!-- NAV BUTTONS -->
+    <div class="step-nav" id="step-nav">
+      <button class="btn-back" id="btn-back" onclick="prevStep()" style="visibility:hidden">← Back</button>
+      <button class="btn-next" id="btn-next" onclick="nextStep()">Next Step →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ OUR IMPACT ══════════════════════ -->
+<div id="page-impact" class="page">
+  <div class="impact-page">
+    <h1>Our Impact</h1>
+    <p class="lead">Every EcoBrew subscription avoids single-use packaging, supports fair-trade farmers, and reduces carbon emissions. Here's the data — transparently reported and third-party verified.</p>
+
+    <div class="metric-row">
+      <div class="metric-box">
+        <div class="m-num">42</div>
+        <div class="m-unit">kg CO₂ / year</div>
+        <div class="m-label">Average carbon saved per subscriber vs disposable packaging</div>
+      </div>
+      <div class="metric-box">
+        <div class="m-num">134t</div>
+        <div class="m-unit">Total CO₂ avoided</div>
+        <div class="m-label">Across all EcoBrew subscriptions since launch in 2022</div>
+      </div>
+      <div class="metric-box">
+        <div class="m-num">98%</div>
+        <div class="m-unit">Return rate</div>
+        <div class="m-label">Canisters returned and re-entered into our circular system</div>
+      </div>
+    </div>
+
+    <div class="bcorp-banner">
+      <div class="bcorp-badge">🏅</div>
+      <div class="bcorp-text">
+        <h3>B Corp Certification — In Progress</h3>
+        <p>EcoBrew has applied for B Corp certification, meeting rigorous standards for social and environmental performance, accountability and transparency. Our current impact score: <strong style="color:var(--sage)">87.4 / 200</strong> (threshold: 80). Expected certification Q2 2025.</p>
+      </div>
+    </div>
+
+    <h2 style="font-family:'Playfair Display',serif; font-size:28px; color:var(--bark); margin-bottom:16px;">How We Calculate Carbon Savings</h2>
+    <p style="color:#555; line-height:1.75; margin-bottom:12px;">Our carbon methodology is based on a lifecycle assessment (LCA) comparing EcoBrew's reusable canister system against equivalent single-use aluminium and cardboard packaging. The LCA was conducted using ISO 14040:2006 standards.</p>
+    <p style="color:#555; line-height:1.75; margin-bottom:12px;">Each stainless steel canister is designed for a minimum of <strong>500 use-cycles</strong>. Over its lifetime, the embodied carbon of manufacturing is amortised across all uses, resulting in a per-delivery carbon footprint of approximately <strong>0.08kg CO₂e</strong> — compared to <strong>0.89kg CO₂e</strong> for single-use equivalents.</p>
+    <div class="privacy-box">
+      <p>📊 Full methodology available on request. Third-party verification by Carbon Trust in progress. Data accurate as of April 2024.</p>
+    </div>
+  </div>
+  <footer>
+    <p>© 2024 EcoBrew Ltd · <a onclick="showPage('privacy')">Privacy Policy</a> · <a>Terms</a> · <a>Accessibility</a></p>
+  </footer>
+</div>
+
+<!-- ══════════════════════ RETURNS PORTAL ══════════════════════ -->
+<div id="page-returns" class="page">
+  <div class="returns-page">
+    <h1>Returns Portal</h1>
+    <p class="subtitle">Schedule a canister collection in under 60 seconds.</p>
+    <div class="return-form">
+      <div class="form-row">
+        <div>
+          <label>Subscriber Email</label>
+          <input type="email" placeholder="your@email.com">
+        </div>
+        <div>
+          <label>Subscription ID</label>
+          <input type="text" placeholder="EB-XXXXX">
+        </div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label>Collection Address</label>
+        <input type="text" placeholder="Your delivery address (pre-filled after login)" style="width:100%">
+      </div>
+      <div class="form-row">
+        <div>
+          <label>Preferred Collection Date</label>
+          <input type="date">
+        </div>
+        <div>
+          <label>Time Window</label>
+          <select>
+            <option>8am – 12pm</option>
+            <option>12pm – 5pm</option>
+            <option>5pm – 8pm</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label>Number of Canisters to Return</label>
+        <div class="canister-counter">
+          <button class="count-btn" onclick="changeCount(-1)">−</button>
+          <div class="count-num" id="canister-count">1</div>
+          <button class="count-btn" onclick="changeCount(1)">+</button>
+          <span style="font-size:13px; color:#888; margin-left:4px">canister(s)</span>
+        </div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label>Special Instructions (optional)</label>
+        <input type="text" placeholder="e.g. Leave in porch, ring bell">
+      </div>
+      <button class="confirm-btn" onclick="this.textContent='✓ Collection Scheduled!'; this.style.background='var(--forest)'">Schedule Collection ♻️</button>
+    </div>
+  </div>
+  <footer>
+    <p>© 2024 EcoBrew Ltd · <a onclick="showPage('privacy')">Privacy Policy</a> · <a>Terms</a> · <a>Accessibility</a></p>
+  </footer>
+</div>
+
+<!-- ══════════════════════ PRIVACY POLICY ══════════════════════ -->
+<div id="page-privacy" class="page">
+  <div class="privacy-page">
+    <h1>Privacy Policy</h1>
+    <div class="privacy-meta">Last updated: 28 April 2024 · EcoBrew Ltd, Registered in England &amp; Wales · ICO Reference: ZB123456</div>
+
+    <div class="privacy-box">
+      <p>🍪 <strong>Cookie Consent:</strong> We use necessary cookies to operate our website, analytics cookies (Google Analytics 4) to understand usage, and marketing cookies for personalised content. You can manage your preferences at any time via the cookie banner or by contacting us.</p>
+    </div>
+
+    <h2>1. Who We Are</h2>
+    <p>EcoBrew Ltd ("EcoBrew", "we", "us") is a zero-waste coffee subscription service registered in England &amp; Wales. We are the data controller for the personal data collected through this website. Contact: <strong>privacy@ecobrew.co.uk</strong></p>
+
+    <h2>2. What Personal Data We Collect</h2>
+    <ul>
+      <li><strong>Identity data:</strong> Full name, username or similar identifier</li>
+      <li><strong>Contact data:</strong> Email address, delivery address, telephone number</li>
+      <li><strong>Subscription preferences:</strong> Bean selection, delivery frequency, return schedule</li>
+      <li><strong>Financial data:</strong> Payment card details (processed via Stripe; not stored by EcoBrew)</li>
+      <li><strong>Technical data:</strong> IP address, browser type, device identifiers, cookies</li>
+      <li><strong>Usage data:</strong> Pages visited, time on site, referring URLs (via Google Analytics 4)</li>
+    </ul>
+
+    <h2>3. Lawful Basis for Processing (GDPR Article 6)</h2>
+    <table class="tag-table">
+      <tr><th>Purpose</th><th>Lawful Basis</th></tr>
+      <tr><td>Fulfilling your subscription (delivery, canister collection)</td><td>Performance of contract (Art. 6(1)(b))</td></tr>
+      <tr><td>Processing payment</td><td>Performance of contract (Art. 6(1)(b))</td></tr>
+      <tr><td>Sending service emails (order confirmation, dispatch)</td><td>Performance of contract (Art. 6(1)(b))</td></tr>
+      <tr><td>Website analytics (GA4)</td><td>Legitimate interests (Art. 6(1)(f))</td></tr>
+      <tr><td>Marketing emails and personalised offers</td><td>Consent (Art. 6(1)(a))</td></tr>
+      <tr><td>Legal compliance (VAT records, fraud prevention)</td><td>Legal obligation (Art. 6(1)(c))</td></tr>
+    </table>
+
+    <h2>4. Data Retention Periods</h2>
+    <p>We retain your personal data for <strong>24 months after the end of your subscription</strong>, after which it is securely deleted. Payment records are retained for 7 years to comply with HMRC requirements. Analytics data is retained for 14 months within Google Analytics 4.</p>
+
+    <h2>5. Your Rights</h2>
+    <p>Under UK GDPR, you have the right to: access your data, rectify inaccurate data, erase your data ("right to be forgotten"), restrict processing, data portability, and object to processing. To exercise any right, contact <strong>privacy@ecobrew.co.uk</strong>. You may also lodge a complaint with the ICO at <strong>ico.org.uk</strong>.</p>
+
+    <h2>6. Cookies We Use</h2>
+    <table class="tag-table">
+      <tr><th>Cookie</th><th>Type</th><th>Purpose</th><th>Duration</th></tr>
+      <tr><td>ecobrew_session</td><td>Necessary</td><td>Maintains login session</td><td>Session</td></tr>
+      <tr><td>ecobrew_csrf</td><td>Necessary</td><td>Security (CSRF protection)</td><td>Session</td></tr>
+      <tr><td>_ga</td><td>Analytics</td><td>Google Analytics 4 — usage tracking</td><td>2 years</td></tr>
+      <tr><td>_ga_XXXXXXX</td><td>Analytics</td><td>GA4 session persistence</td><td>2 years</td></tr>
+      <tr><td>ecobrew_consent</td><td>Necessary</td><td>Stores your cookie preferences</td><td>1 year</td></tr>
+    </table>
+
+    <h2>7. Third Parties</h2>
+    <p>We share data only where necessary: <strong>Stripe</strong> (payment processing, PCI-DSS compliant), <strong>Sendgrid</strong> (transactional email), <strong>Google</strong> (Analytics 4), and <strong>Hootsuite</strong> (social media management). All processors are bound by GDPR-compliant data processing agreements.</p>
+
+    <h2>8. Contact Us</h2>
+    <p>EcoBrew Ltd · Data Protection Officer · privacy@ecobrew.co.uk · 12 Roastery Lane, London, EC1A 1BB</p>
+  </div>
+  <footer>
+    <p>© 2024 EcoBrew Ltd · <a onclick="showPage('home')">Home</a> · <a>Terms</a> · <a>Accessibility</a></p>
+  </footer>
+</div>
+
+<!-- ══════════════════════ ACCOUNT ══════════════════════ -->
+<div id="page-account" class="page">
+  <div class="account-page">
+    <h1>My Account</h1>
+    <div class="account-card">
+      <h3>Subscription Details</h3>
+      <div class="account-row"><span class="key">Status</span><span class="val"><span class="status-badge">Active</span></span></div>
+      <div class="account-row"><span class="key">Bean</span><span class="val">Ethiopian Yirgacheffe (Light Roast)</span></div>
+      <div class="account-row"><span class="key">Frequency</span><span class="val">Fortnightly (500g)</span></div>
+      <div class="account-row"><span class="key">Price</span><span class="val">£17.49 / delivery</span></div>
+      <div class="account-row"><span class="key">Next Delivery</span><span class="val">12 May 2024</span></div>
+      <div class="account-row"><span class="key">Next Return</span><span class="val">15 May 2024</span></div>
+    </div>
+    <div class="account-card">
+      <h3>Carbon Impact</h3>
+      <div class="account-row"><span class="key">CO₂ saved this year</span><span class="val" style="color:var(--moss)">18.4 kg</span></div>
+      <div class="account-row"><span class="key">Canisters reused</span><span class="val">12</span></div>
+      <div class="account-row"><span class="key">Single-use avoided</span><span class="val">12 units</span></div>
+    </div>
+    <div class="account-card">
+      <h3>Personal Details</h3>
+      <div class="account-row"><span class="key">Name</span><span class="val">Alex Johnson</span></div>
+      <div class="account-row"><span class="key">Email</span><span class="val">alex@example.com</span></div>
+      <div class="account-row"><span class="key">Address</span><span class="val">123 Green St, London EC1A 1BB</span></div>
+    </div>
+  </div>
+  <footer>
+    <p>© 2024 EcoBrew Ltd · <a onclick="showPage('privacy')">Privacy Policy</a></p>
+  </footer>
+</div>
+
+<script>
+  let currentStep = 1;
+  let canisterCount = 1;
+
+  const breadcrumbs = {
+    home: [],
+    subscription: [{ label: 'Subscription Builder' }],
+    impact: [{ label: 'Our Impact' }],
+    returns: [{ label: 'Returns Portal' }],
+    privacy: [{ label: 'Privacy Policy' }],
+    account: [{ label: 'My Account' }]
+  };
+
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const navEl = document.getElementById('nav-' + page);
+    if (navEl) navEl.classList.add('active');
+
+    // Breadcrumb
+    const bc = document.getElementById('breadcrumb');
+    const crumbs = breadcrumbs[page] || [];
+    let html = '<a onclick="showPage(\'home\')">Home</a>';
+    crumbs.forEach(c => { html += ' <span class="sep">›</span> <span>' + c.label + '</span>'; });
+    bc.innerHTML = html;
+
+    window.scrollTo(0, 0);
+
+    if (page === 'subscription') { currentStep = 1; renderStep(); }
+  }
+
+  function renderStep() {
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('step-content-' + i).style.display = 'none';
+      const stepEl = document.getElementById('step-' + i);
+      stepEl.classList.remove('active', 'done');
+      document.getElementById('circle-' + i).textContent = i;
+    }
+    document.getElementById('step-content-success').style.display = 'none';
+    document.getElementById('step-content-' + currentStep).style.display = 'block';
+
+    for (let i = 1; i < currentStep; i++) {
+      document.getElementById('step-' + i).classList.add('done');
+      document.getElementById('circle-' + i).textContent = '✓';
+    }
+    document.getElementById('step-' + currentStep).classList.add('active');
+
+    const fills = [0, 33, 66, 100];
+    document.getElementById('progress-fill').style.width = fills[currentStep - 1] + '%';
+
+    document.getElementById('btn-back').style.visibility = currentStep > 1 ? 'visible' : 'hidden';
+    document.getElementById('btn-next').textContent = currentStep === 4 ? 'Complete Subscription ✓' : 'Next Step →';
+  }
+
+  function nextStep() {
+    if (currentStep < 4) { currentStep++; renderStep(); }
+    else {
+      document.getElementById('step-content-4').style.display = 'none';
+      document.getElementById('step-content-success').style.display = 'block';
+      document.getElementById('step-nav').style.display = 'none';
+      document.getElementById('progress-fill').style.width = '100%';
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById('step-' + i).classList.remove('active');
+        document.getElementById('step-' + i).classList.add('done');
+        document.getElementById('circle-' + i).textContent = '✓';
+      }
+    }
+  }
+
+  function prevStep() {
+    if (currentStep > 1) { currentStep--; renderStep(); }
+  }
+
+  function goToStep(n) {
+    if (n <= currentStep) { currentStep = n; renderStep(); }
+  }
+
+  function selectBean(el) {
+    document.querySelectorAll('.bean-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectFreq(el) {
+    document.querySelectorAll('.freq-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectDay(el) {
+    document.querySelectorAll('.cal-day.available').forEach(c => c.classList.remove('selected-day'));
+    el.classList.add('selected-day');
+  }
+
+  function changeCount(delta) {
+    canisterCount = Math.max(1, canisterCount + delta);
+    document.getElementById('canister-count').textContent = canisterCount;
+  }
+</script>
+</body>
+</html>
